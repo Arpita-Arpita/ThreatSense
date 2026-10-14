@@ -1,0 +1,15 @@
+[project]
+name = "threatsense-ml"
+version = "0.1.0"
+description = "ThreatSense ML core: feature extraction, Isolation Forest training, evaluation"
+requires-python = ">=3.12"
+dependencies = ["scikit-learn", "numpy", "pandas", "joblib"]
+
+# Installed editable into the backend venv (`pip install -e ../ml`) so the
+# backend detection engine imports the SAME feature code used for training.
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["features", "normalize", "synth", "train", "evaluate", "prepare_data"]

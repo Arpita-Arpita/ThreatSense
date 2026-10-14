@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ThreatSense Incident Report {report_short}</title>
+<style>
+  /* ------------------------------------------------------------------
+     Palette and type mirror frontend/src/styles/theme.css so the export
+     reads as the same product as the dashboard. Fonts degrade to the
+     system sans if Inter / Space Grotesk are not installed on the host —
+     there are deliberately NO remote font imports, because rendering must
+     work offline and must never make a network call (see pdf.py).
+     ------------------------------------------------------------------ */
+  @page {
+    size: A4;
+    margin: 20mm 18mm 22mm 18mm;
+    @bottom-left {
+      content: "ThreatSense · Incident Report {report_short}";
+      font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 7.5pt;
+      color: #97a0b8;
+    }
+    @bottom-right {
+      content: "Page " counter(page) " of " counter(pages);
+      font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+      font-size: 7.5pt;
+      color: #97a0b8;
+    }
+  }
+
+  html { font-size: 10.5pt; }
+  body {
+    font-family: "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    color: #0a0e1a;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  /* --- masthead --- */
+  .masthead { border-bottom: 2px solid #2b54ff; padding-bottom: 10px; }
+  .wordmark {
+    font-family: "Space Grotesk", "Inter", Helvetica, Arial, sans-serif;
+    font-size: 17pt; font-weight: 700; letter-spacing: -0.03em; margin: 0;
+  }
+  .wordmark span { color: #2b54ff; }
+  .eyebrow {
+    font-size: 7.5pt; font-weight: 700; letter-spacing: 0.16em;
+    text-transform: uppercase; color: #97a0b8; margin: 2px 0 0 0;
+  }
+
+  h1.doc-title {
+    font-family: "Space Grotesk", "Inter", Helvetica, Arial, sans-serif;
+    font-size: 19pt; font-weight: 700; letter-spacing: -0.03em;
+    margin: 14px 0 4px 0;
+  }
+  .subtitle { color: #515a72; font-size: 9.5pt; margin: 0 0 11px 0; }
+
+  .chip {
+    display: inline-block; border-radius: 999px;
+    padding: 3px 11px; font-size: 8pt; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+    color: {severity_colour}; background: {severity_wash};
+    border: 1px solid {severity_colour};
+  }
+
+  /* --- metadata --- */
+  .meta {
+    width: 100%; border-collapse: collapse;
+    background: #f4f6fc; border: 1px solid #e8ecf6; border-radius: 6px;
+    margin: 0 0 20px 0;
+  }
+  .meta td { padding: 5px 12px; vertical-align: top; border-bottom: 1px solid #e8ecf6; }
+  .meta tr:last-child td { border-bottom: none; }
+  .meta .k {
+    width: 27%; color: #515a72; font-size: 8pt; font-weight: 700;
+    letter-spacing: 0.06em; text-transform: uppercase;
+  }
+  .meta .v { font-size: 9.5pt; }
+  .mono { font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace; font-size: 9pt; }
+
+  /* --- report body --- */
+  h2 {
+    font-family: "Space Grotesk", "Inter", Helvetica, Arial, sans-serif;
+    font-size: 12pt; font-weight: 700; letter-spacing: -0.02em;
+    color: #1a3ce6; margin: 16px 0 5px 0;
+    padding-left: 10px; border-left: 3px solid #2b54ff;
+    page-break-after: avoid;
+  }
+  h2:first-of-type { margin-top: 4px; }
+  p { margin: 0 0 9px 0; text-align: justify; }
+  ul { margin: 0 0 9px 0; padding-left: 18px; }
+  li { margin-bottom: 4px; }
+  section { page-break-inside: auto; }
+
+  /* --- provenance --- */
+  .provenance {
+    margin-top: 12px; padding-top: 8px; border-top: 1px solid #e8ecf6;
+    color: #515a72; font-size: 8pt; line-height: 1.45;
+    /* the note and the ID line are one unit — never split them across pages */
+    page-break-inside: avoid;
+  }
+  .provenance strong { color: #0a0e1a; }
+  .provenance .ids { margin-top: 6px; }
+</style>
+</head>
+<body>
+
+  <div class="masthead">
+    <p class="wordmark">Threat<span>Sense</span></p>
+    <p class="eyebrow">Network threat detection · Incident report</p>
+  </div>
+
+  <h1 class="doc-title">{threat_label}</h1>
+  <p class="subtitle">
+    <span class="chip">{severity}</span>
+    &nbsp;Detected {detected_at} from {source_ip}
+  </p>
+
+  <table class="meta">
+    <tr>
+      <td class="k">Threat category</td><td class="v">{threat_label} ({threat_type})</td>
+    </tr>
+    <tr>
+      <td class="k">Severity</td><td class="v">{severity}</td>
+    </tr>
+    <tr>
+      <td class="k">Anomaly score</td><td class="v">{anomaly_score} of 1.00</td>
+    </tr>
+    <tr>
+      <td class="k">Source address</td><td class="v mono">{source_ip}</td>
+    </tr>
+    <tr>
+      <td class="k">Destination address</td><td class="v mono">{destination_ip}</td>
+    </tr>
+    <tr>
+      <td class="k">Detected at</td><td class="v">{detected_at}</td>
+    </tr>
+    <tr>
+      <td class="k">Status</td><td class="v">{ack_status}</td>
+    </tr>
+    <tr>
+      <td class="k">Detection model</td><td class="v">{model_label}</td>
+    </tr>
+    <tr>
+      <td class="k">Detection ID</td><td class="v mono">{detection_id}</td>
+    </tr>
+  </table>
+
+  {sections_html}
+
+  <div class="provenance">
+    <strong>How this report was produced.</strong>
+    The four sections above were written by a language model ({model_used}) from
+    detection metadata only — category, score, severity, addresses, a traffic
+    summary and feature values. Raw log lines were never sent. Verify the content
+    against the detection data before acting on it or sharing it externally.
+    <div class="ids">
+      <strong>Report ID</strong> <span class="mono">{report_id}</span> ·
+      <strong>Generated</strong> {generated_at} ·
+      <strong>By</strong> {generated_by}
+    </div>
+  </div>
+
+</body>
+</html>

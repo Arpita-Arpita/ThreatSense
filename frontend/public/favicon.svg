@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="ThreatSense">
+  <!-- Same shield-and-check mark as the login brand block, on the cobalt
+       accent (accent #2b54ff). SVG rather than .ico so it stays crisp at
+       every size and remains one small file. -->
+  <rect width="32" height="32" rx="7" fill="#2b54ff"/>
+  <path d="M16 6.5l7 2.6v5.2c0 4.3-3 7.4-7 9.6-4-2.2-7-5.3-7-9.6V9.1l7-2.6z"
+        fill="rgba(255,255,255,.25)" stroke="#fff" stroke-width="1.5" stroke-linejoin="round"/>
+  <path d="M12.9 15.9l2.1 2.1 4.2-4.4"
+        fill="none" stroke="#fff" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>

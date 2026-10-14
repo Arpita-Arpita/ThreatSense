@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ThreatSense daily backup job — NFR-10, "Daily automated pg_dump backups
+  must run at 02:00 AEST".
+
+  WHY launchd AND NOT cron
+  cron on macOS silently SKIPS a job whose scheduled time passes while the
+  machine is asleep — no run, no log line, nothing to show an examiner. launchd
+  with StartCalendarInterval catches up instead: if the Mac is asleep at 02:00
+  the job fires on wake, and if it is powered off the job fires at next boot.
+  Either way the run appears in var/backup.log with its real timestamp. On a
+  laptop that is usually shut at 02:00, that difference is the whole reason
+  this file exists.
+
+  TIMEZONE
+  StartCalendarInterval uses the Mac's LOCAL time. With the system set to
+  Australia/Sydney, Hour 2 is 02:00 AEST as the requirement states — but note
+  Sydney moves to AEDT (UTC+11) on the first Sunday in October, so runs from
+  then on are 02:00 AEDT. Log lines carry a UTC offset so the distinction is
+  visible in the evidence rather than assumed.
+
+  INSTALL
+    1. Edit the two absolute paths below to match your checkout. launchd does
+       NOT expand ~ or $HOME here, so they must be literal.
+    2. cp scripts/com.threatsense.backup.plist ~/Library/LaunchAgents/
+    3. launchctl load ~/Library/LaunchAgents/com.threatsense.backup.plist
+    4. Verify it is registered:  launchctl list | grep threatsense
+    5. Force one run now:        launchctl start com.threatsense.backup
+    6. Confirm:                  tail backend/var/backup.log
+
+  UNINSTALL
+    launchctl unload ~/Library/LaunchAgents/com.threatsense.backup.plist
+-->
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN"
+  "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.threatsense.backup</string>
+
+    <key>ProgramArguments</key>
+    <array>
+        <string>/bin/bash</string>
+        <!-- EDIT: absolute path to backup_db.sh in your checkout -->
+        <string>/Users/rabinkhadka/threatsense/backend/scripts/backup_db.sh</string>
+    </array>
+
+    <!-- 02:00 local time, every day. -->
+    <key>StartCalendarInterval</key>
+    <dict>
+        <key>Hour</key>
+        <integer>2</integer>
+        <key>Minute</key>
+        <integer>0</integer>
+    </dict>
+
+    <!-- Docker Desktop puts the `docker` binary here on Apple Silicon.
+         launchd jobs do NOT inherit your shell PATH, so without this the
+         script's preflight would report "docker command not found". -->
+    <key>EnvironmentVariables</key>
+    <dict>
+        <key>PATH</key>
+        <string>/opt/homebrew/bin:/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
+    </dict>
+
+    <!-- EDIT: absolute path to your checkout's backend/ directory -->
+    <key>WorkingDirectory</key>
+    <string>/Users/rabinkhadka/threatsense/backend</string>
+
+    <!-- launchd's own stdout/stderr capture, separate from the script's
+         structured var/backup.log. Useful when the job fails before the
+         script gets far enough to log anything itself. -->
+    <key>StandardOutPath</key>
+    <string>/Users/rabinkhadka/threatsense/backend/var/launchd-backup.out.log</string>
+    <key>StandardErrorPath</key>
+    <string>/Users/rabinkhadka/threatsense/backend/var/launchd-backup.err.log</string>
+
+    <key>RunAtLoad</key>
+    <false/>
+</dict>
+</plist>

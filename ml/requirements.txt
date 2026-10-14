@@ -1,0 +1,5 @@
+# ML training/evaluation module
+scikit-learn
+numpy
+pandas
+joblib

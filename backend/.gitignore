@@ -1,0 +1,43 @@
+# ThreatSense backend — files that must never reach the repository.
+#
+# NOTE: if a .gitignore already exists at the repository root, this file is
+# ADDITIVE — git applies both. Nothing here needs removing from that one.
+
+# --- TLS material (task 6.2) -------------------------------------------------
+# The private key in certs/ authenticates the collector. Committing it to a
+# public repository would let anyone impersonate the log collector, and the
+# key cannot be un-published once pushed — GitHub retains it in history even
+# after deletion. Certificates are regenerated per machine, so nothing here
+# needs sharing.
+certs/
+*.key
+*.pem
+*.p12
+*.pfx
+
+# --- Secrets -----------------------------------------------------------------
+.env
+.env.*
+!.env.example
+
+# --- Runtime artefacts -------------------------------------------------------
+# Database dumps contain every administrator hash and every log record.
+var/
+*.sql.gz
+
+# --- Python ------------------------------------------------------------------
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+.pytest_cache/
+*.egg-info/
+
+# --- Locust output (task 6.1, NFR-07) ----------------------------------------
+*_stats.csv
+*_stats_history.csv
+*_failures.csv
+*_exceptions.csv
+
+# --- macOS -------------------------------------------------------------------
+.DS_Store

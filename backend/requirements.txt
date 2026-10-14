@@ -1,0 +1,22 @@
+# FastAPI backend — pinned loosely; lock exact versions when you build each task.
+fastapi
+uvicorn[standard]
+pydantic
+pydantic-settings
+sqlalchemy>=2.0
+psycopg[binary]
+bcrypt
+pyjwt
+python-multipart
+sendgrid
+openai
+# Incident-report PDF export (task 3.3). HTML+CSS rendering, so the PDF
+# reuses the dashboard palette from frontend/src/styles/theme.css.
+# Needs system libs: macOS `brew install pango`, Debian/Ubuntu
+# `apt install libpango-1.0-0 libpangoft2-1.0-0`. On Apple Silicon also
+# export DYLD_FALLBACK_LIBRARY_PATH=/opt/homebrew/lib  (see README).
+weasyprint
+# The shared feature module + model inference come from the local ml package:
+-e ../ml
+pytest
+httpx
