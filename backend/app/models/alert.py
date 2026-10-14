@@ -1,4 +1,5 @@
 """ORM model: alerts table (Section 2.5). Single status field PENDING/SENT/FAILED."""
+from typing import TYPE_CHECKING
 from datetime import datetime
 from uuid import UUID
 from sqlalchemy import Integer, String, Text, ForeignKey, DateTime, func
@@ -8,7 +9,9 @@ from sqlalchemy.orm import Mapped, mapped_column, relationship
 from .base import Base
 from .enums import AlertChannel, AlertStatus
 
-
+if TYPE_CHECKING:
+    from .detection import Detection
+    
 class Alert(Base):
     __tablename__ = "alerts"
 
@@ -30,7 +33,4 @@ class Alert(Base):
     sent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
-    from typing import TYPE_CHECKING
-
-if TYPE_CHECKING:
-    from .detection import Detection
+   
