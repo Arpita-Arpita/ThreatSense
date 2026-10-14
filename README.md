@@ -1,7 +1,7 @@
 # ThreatSense
 
 **AI-Driven Network Threat Detection and Visualisation for SMBs**
-VU Sydney · NIT3004 Final Project Delivery · Group 5 · Rabin Khadka (s8154766)
+VU Sydney · NIT3004 Final Project Delivery · Group 3 · Arpita Arpita (s8166746)
 
 A monorepo with three parts: a **FastAPI backend** (ingestion, auth, detection
 engine, alerting, AI reports), a **scikit-learn ML module** (Isolation Forest
