@@ -30,4 +30,7 @@ class Alert(Base):
     sent_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True))
     created_at: Mapped[datetime] = mapped_column(DateTime(timezone=True), nullable=False, server_default=func.now())
 
-    detection: Mapped["Detection"] = relationship(back_populates="alerts")
+    from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    from .detection import Detection
